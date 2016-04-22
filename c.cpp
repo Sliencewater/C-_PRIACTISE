@@ -1,7 +1,10 @@
-// c.cpp : ¶¨Òå¿ØÖÆÌ¨Ó¦ÓÃ³ÌĞòµÄÈë¿Úµã¡£
+// c.cpp : å®šä¹‰æ§åˆ¶å°åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
 //
 
-#include "stdafx.h"
+#include <iosream>
+
+using namespace std;
+
 class Complex{
 public:
 	Complex(){ real = 0; imag = 0 ; }
