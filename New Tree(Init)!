@@ -1,0 +1,118 @@
+// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
+//
+
+#include "stdafx.h"
+typedef struct BiTNode{
+
+	int data;
+
+	BiTNode *lchild, *rchild;
+
+}BiTNode, *BiTree;
+
+void InitBiTree(BiTree &T)
+{
+	T = NULL;
+}
+
+void DestroyBiTree(BiTree &T)
+{
+	if (T)
+	{
+		DestroyBiTree(T->lchild);
+		DestroyBiTree(T->rchild);
+		delete T;
+	}
+}
+void CreateBiTree(BiTree &T)//输入data为0，则代表不存在。
+{
+	int a;
+	cin >> a;
+	if (a == 0)
+	{
+		T = NULL;
+	}
+	else
+	{
+		T = new BiTNode;
+		CreateBiTree(T->lchild);
+		CreateBiTree(T->rchild);
+		T->data = a;
+	}
+}
+void InOrderTraverse(BiTree &T)
+{
+	if (T)
+	{
+		InOrderTraverse(T->lchild);
+
+		cout << T->data << endl;
+
+		InOrderTraverse(T->rchild);
+	}
+
+}
+void PostOrderTraverse(BiTree &T)
+{
+	if (T)
+	{
+		PostOrderTraverse(T->lchild);
+		
+		PostOrderTraverse(T->rchild);
+		
+		cout << T->data << endl;
+	}
+
+}
+void PreOrderTraverse(BiTree &T)
+{
+	if (T)
+	{
+		cout << T->data << endl;
+
+		PreOrderTraverse(T->lchild);
+
+		PreOrderTraverse(T->rchild);
+		
+	}
+
+}
+/*void LevelorderTraverse(BiTree &T)
+{
+	if (T->lchild)
+	{
+
+		   
+	}
+}*/
+int PrintNodeAtLevel(BiTree T,int level)// ERROR
+{
+	int i = 1;
+	while (i <= level)
+	{
+		
+		if (!T|| level < 0)
+			return 0;
+		else if (i == 0)
+		{
+			cout << T->data << endl;
+			return 1;
+		}
+		else
+		{
+			return PrintNodeAtLevel(T->lchild,i-1) + PrintNodeAtLevel(T->rchild,i-1);
+		}
+	}
+	i++;
+}
+int _tmain(int argc, _TCHAR* argv[])
+{
+	BiTree T;
+	InitBiTree(T);
+	CreateBiTree(T);
+	//InOrderTraverse(T);
+	PrintNodeAtLevel(T,3);
+	//cout << T->data;
+	return 0;
+}
+
