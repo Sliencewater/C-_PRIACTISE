@@ -1,0 +1,32 @@
+#include <iostream>
+using namespace std;
+class fun{
+public:
+    fun(){};
+    fun(int b,int c):weigh(b) , right(c){}
+    static void text_1(fun);
+     void text_2(void);
+private:
+    static int length;
+    int weigh;
+    int right;
+};
+int fun::length = 10;
+void fun::text_2(void)
+{
+    cout << weigh*right;
+}
+void fun::text_1(fun a)
+{
+    cout<< length*a.weigh*a.right;
+    cout << endl;
+}
+int main()
+{
+    fun a[3]={fun(20,30),fun(30,40),fun(40,50)};
+    for (int i = 0; i < 3; i++) {
+        fun::text_1(a[i]);
+    }
+    
+    
+}
