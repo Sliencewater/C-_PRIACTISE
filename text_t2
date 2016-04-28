@@ -1,0 +1,29 @@
+#include <iostream>
+using namespace std;
+class rectangle{
+public:
+    rectangle(int a,int b):len(a),wid(b){}
+    rectangle(){};
+    friend void area(rectangle T);
+    friend void fun(rectangle T);
+private:
+    int len;
+    int wid;
+};
+
+void area(rectangle T)
+{
+    cout << T.len*T.wid;
+    cout << endl;
+}
+void fun(rectangle T)
+{
+    cout<<2*(T.len +T.wid);
+    cout << endl;
+}
+int main()
+{
+    rectangle a(1,2);
+    area(a);
+    fun(a);
+}
