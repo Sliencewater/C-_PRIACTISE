@@ -1,7 +1,58 @@
-// ConsoleApplication1.cpp : 定义控制台应用程序的入口点。
-//
+#include <iostream>
+using namespace std;
+#include <string>
+/*用顺序队列已经实现，试用链队
+下面为链队代码
+*/
+typedef struct QNode
+{
+	int data;
+	QNode *next;
+}QNode, *QueuePtr;
 
-#include "stdafx.h"
+typedef struct
+{
+	QueuePtr front;
+	QueuePtr rear;
+}LinkQueue;
+
+void InitQueue(LinkQueue &Q)
+{
+	Q.front = Q.rear = new QNode;
+	Q.front->next = NULL;
+}
+void EnQueue(LinkQueue &Q, int e)
+{
+	QueuePtr p;
+	p = new QNode;
+	p->data = e;
+	p->next = NULL;
+	Q.rear->next = p;
+	Q.rear = p;
+}
+void InitBiTree(BiTree &T)
+{
+	T = NULL;
+}
+int DeQueue(LinkQueue &Q)
+{
+	QueuePtr p;
+	if (Q.front = Q.rear)
+	{
+		return 0;
+	}
+	p = Q.front->next;
+	cout << p->data;
+	Q.front->next = p->next;
+	if (Q.rear = p)
+	{
+		Q.rear = Q.front;
+	}
+	delete p;
+	return 1;
+}
+
+
 typedef struct BiTNode{
 
 	int data;
@@ -10,10 +61,7 @@ typedef struct BiTNode{
 
 }BiTNode, *BiTree;
 
-void InitBiTree(BiTree &T)
-{
-	T = NULL;
-}
+
 
 void DestroyBiTree(BiTree &T)
 {
@@ -57,9 +105,9 @@ void PostOrderTraverse(BiTree &T)
 	if (T)
 	{
 		PostOrderTraverse(T->lchild);
-		
+
 		PostOrderTraverse(T->rchild);
-		
+
 		cout << T->data << endl;
 	}
 
@@ -73,46 +121,46 @@ void PreOrderTraverse(BiTree &T)
 		PreOrderTraverse(T->lchild);
 
 		PreOrderTraverse(T->rchild);
-		
+
 	}
 
 }
-/*void LevelorderTraverse(BiTree &T)
-{
-	if (T->lchild)
-	{
 
-		   
-	}
-}*/
-int PrintNodeAtLevel(BiTree T,int level)// ERROR
+
+void LevelorderTraverse(BiTree &T)
 {
-	int i = 1;
-	while (i <= level)
+	BiTNode *p[50];
+	p[0] = T;
+	int front = 0;
+	int rear = 1;
+	while (front<rear)
 	{
+		if (p[front])
+		{
+			cout << p[front]->data << ' ';
+
+			p[rear++] = p[front]->lchild;
+
+			p[rear++] = p[front]->rchild;
+
+		}
+			front++;
 		
-		if (!T|| level < 0)
-			return 0;
-		else if (i == 0)
-		{
-			cout << T->data << endl;
-			return 1;
-		}
-		else
-		{
-			return PrintNodeAtLevel(T->lchild,i-1) + PrintNodeAtLevel(T->rchild,i-1);
-		}
 	}
-	i++;
 }
+
+
+
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+
 	BiTree T;
 	InitBiTree(T);
 	CreateBiTree(T);
 	//InOrderTraverse(T);
-	PrintNodeAtLevel(T,3);
-	//cout << T->data;
+	
+	LevelorderTraverse(T);
 	return 0;
 }
 
