@@ -1,0 +1,34 @@
+// a.cpp : 定义控制台应用程序的入口点。
+//
+
+#include "stdafx.h"
+class Time{
+public:
+	Time() { minute = 0; sec = 0;}
+	Time(int m, int s ):minute(m),sec(s){}
+	void operator ++();
+	void display(){cout << minute << ":"<< sec << endl;}
+private:
+	int minute ;
+	int sec;
+};
+void Time::operator ++()
+{
+	if(++sec >= 60)
+	{
+		sec -=60;
+		++minute;
+	}
+	//return *this;
+}
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	Time time1(34,0);
+	for( int i = 0; i< 61; i++)
+	{
+		++time1;
+		time1.display();
+	}
+	return 0;
+}
