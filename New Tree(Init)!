@@ -109,6 +109,49 @@ void LevelorderTraverse(BiTree &T)
 	}
 }
 
+void Copy(BiTree T, BiTree &NewT)
+{
+	if (T == NULL)
+	{
+		NewT = NULL;
+	}
+	else
+	{
+		NewT = new BiTNode;
+		NewT->data = T->data;
+		Copy(T->lchild, NewT->lchild);
+		Copy(T->rchild, NewT->rchild);
+	}
+}
+int Depth(BiTree T)
+{
+	int m, n;
+	if (T == NULL)
+	{
+		return 0;
+	}
+	else
+	{
+		m = Depth(T->lchild);
+		n = Depth(T->rchild);
+		if (m > n)
+			return(m + 1);
+		else
+			return (n + 1);
+		
+	}
+}
+int NodeCount(BiTree T)
+{
+	if (T == NULL)
+	{
+		return 0;
+	}
+	else
+	{
+		return NodeCount(T->lchild) + NodeCount(T->rchild) + 1;
+	}
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
