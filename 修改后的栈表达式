@@ -1,0 +1,253 @@
+//貌似可以计算十位数的。
+#include <iostream>
+
+#include <stdio.h>
+
+#include<stdlib.h>
+
+#include<string.h>
+
+#include<math.h>
+
+#define true 1
+
+#define false 0
+
+#define OPSETSIZE 7
+
+#define max_double 200
+
+using namespace std;
+
+// 设OPTR和OPND分别为运算符栈和运算数栈，OP为运算符集合
+
+
+// 运算符优先级表
+unsigned char Prior[7][8] =
+{ 
+    '>','>','<','<','<','>','>','<',// +
+    '>','>','<','<','<','>','>','<',// -
+    '>','>','>','>','<','>','>','<',// *
+    '>','>','>','>','<','>','>','<',// /
+    '<','<','<','<','<','=',' ','<',// (
+    '>','>','>','>',' ','>','>','>',// )
+    '<','<','<','<','<',' ','=','<',// #
+};
+
+char OPSET[OPSETSIZE]={'+','-','*','/','(',')','#',};
+
+typedef struct StackChar
+{
+    
+    char c;
+    
+    struct StackChar *next;
+    
+}StackChar;
+
+typedef struct StackDouble
+{
+    
+    double data_d;
+    
+    struct StackDouble *next;
+    
+}StackDouble;
+
+StackChar *Push(StackChar *s_d,char c)
+{
+    
+    StackChar *p=(StackChar*)malloc(sizeof(StackChar));
+    
+    p->c=c;
+    
+    p->next=s_d;
+    
+    return p;
+    
+}
+
+StackDouble *Push(StackDouble *s_d,double f)
+{
+    
+    StackDouble *p=(StackDouble*)malloc(sizeof(StackDouble));
+    
+    p->data_d=f;
+    
+    p->next=s_d;
+    
+    return p;
+    
+}
+
+StackChar *Pop(StackChar *s_d)
+{
+    StackChar *q=s_d;
+    
+    s_d=s_d->next;
+    
+    free(q);
+    
+    return s_d;
+    
+}
+
+//SF类型的指针Pop
+StackDouble *Pop(StackDouble *s_d)
+{
+    
+    StackDouble *q=s_d;
+    
+    s_d=s_d->next;
+    
+    free(q);
+    
+    return s_d;
+    
+}
+
+//计算operate
+double operate(double a,unsigned char temp_char, double b)
+{
+    switch(temp_char)
+    {
+            
+        case '+': return a+b;
+            
+        case '-': return a-b;
+            
+        case '*': return a*b;
+            
+        case '/': return a/b;
+            
+        case '^': return pow(a,b);
+            
+        default : return 0;
+            
+    }
+}
+
+int In(char Test,char *temp_op)
+{
+    int Find=false;
+    
+    for (int i=0; i< OPSETSIZE; i++)
+    {
+        
+        if(Test == temp_op[i])
+            
+            Find= true;
+        
+    }
+    return Find;
+}
+int ReturnOpOrd(char op,char *temp_op)
+{
+    
+    for(int i=0; i< OPSETSIZE; i++)
+    {
+        
+        if (op == temp_op[i])
+            
+            return i;
+        
+    }
+    
+    return 0;
+}
+
+char pre(char A, char B)
+{
+    
+    return Prior[ReturnOpOrd(A,OPSET)][ReturnOpOrd(B,OPSET)];
+    
+}
+
+
+double evaluate(char* fun)
+{
+
+    StackChar *OPTR=NULL;
+    
+    StackDouble *OPND=NULL;
+    
+    char temp[20]={'\0'};
+    
+    double Data,a,b;
+    
+    char theta,*c_temp,Dr[]={'#','\0'};
+    
+    OPTR=Push(OPTR,'#');
+    
+    c_temp=strcat(fun,Dr);
+    
+    while (*c_temp!= '#' || OPTR->c!='#')
+    {
+        if (!In(*c_temp, OPSET))
+        {
+            
+            Dr[0]=*c_temp;
+            
+            strcat(temp,Dr);
+            
+            c_temp++;
+            
+            if (In(*c_temp, OPSET))
+            {
+                Data=atof(temp);
+                
+                OPND=Push(OPND, Data);
+                
+                strcpy(temp,"\0");
+            }
+        }
+        else
+        {
+            switch (pre(OPTR->c, *c_temp))
+            {
+                case '=':
+                    
+                    OPTR=Pop(OPTR);
+                    
+                    c_temp++;
+                    
+                    break;
+                    
+                case '>':
+                    
+                    theta=OPTR->c;OPTR=Pop(OPTR);
+                    
+                    b=OPND->data_d;OPND=Pop(OPND);
+                    
+                    a=OPND->data_d;OPND=Pop(OPND);
+                    
+                    OPND=Push(OPND, operate(a, theta, b));
+                    
+                    break;
+                    
+                case '<':
+                    
+                    OPTR=Push(OPTR, *c_temp);
+                    
+                    c_temp++;
+                    
+                    break;
+            }
+        }
+    }
+    return OPND->data_d;
+}
+int main()
+{
+    char in[max_double];
+    
+    cout <<"输入:"<<endl;
+    
+    cin>>in;
+    
+    cout<<"表达式的值为:"<<endl;
+    
+    cout<< in <<'=' <<evaluate(in)<<endl;
+    
+    return 0;
+}
