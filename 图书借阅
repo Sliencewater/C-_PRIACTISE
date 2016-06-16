@@ -1,0 +1,427 @@
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+using namespace std;
+void Menu();
+
+class Book
+{
+public:
+    
+    Book(){state = 0;}
+    
+    friend ostream& operator <<(ostream &, Book &);
+    
+    friend istream& operator >>(istream &input, Book &c)
+    {
+        
+        input
+        >> c.name
+        >> c.press
+        >> c.writer
+        >> c.price
+        >> c.pagenumber
+        >> c.ISBN
+        >> c.state;
+        return input;
+    }
+    
+    string name;
+    
+    float price;
+    
+    string press;
+    
+    int pagenumber;
+    
+    string writer;
+    
+    int ISBN;
+    
+    bool state;
+    // string lendtime;
+    // string  returntime;
+};
+ostream& operator <<(ostream &output, Book &c)
+{
+    output << "name:" << c.name << "press:" << c.press << "writer:" << c.writer << endl;
+    output << "price:" << c.price << "pagenum:" << c.pagenumber << "ISBN:" << c.ISBN << endl;
+    output << "state:" << endl;
+    return output;
+}
+vector<Book> book1;
+
+class Recording
+{
+public:
+    
+    string reader;
+    
+    string lendbookname;
+    
+    string returnbookname;
+    
+    string lendtime;
+    
+    string returntime;
+    
+    friend ostream& operator <<(ostream &output, Recording &r)
+    {
+        output << "会员名：" << r.reader << endl;
+        output << "借的书名：" << r.lendbookname << endl;
+        output << "借书时间：" << r.lendtime << endl;
+        output << "还书时间：" << r.returntime << endl;
+        output << "还书的名字：" << r.returnbookname << endl;
+        return output;
+    }
+};
+vector<Recording> record1;
+
+void  book_putaway()
+{
+    int n;
+    cout << "输入新书个数：" << endl;
+    cin >> n;
+    cout << "依次输入书名，出版社，作者，价格，页码，图书编号：" << endl;
+    for (int i = 0; i < n; i++)
+    {
+        Book temp;
+        cin >> temp.name >> temp.press >> temp.writer >> temp.price >> temp.pagenumber >> temp.ISBN ;
+        book1.push_back(temp);
+    }
+    return Menu();
+}
+
+
+void book_search()
+{
+    int choose;
+    if (book1.size() == 0) {
+        cout <<" 暂时无图书";
+        return Menu();
+    }
+    cout << "书名查找请按0，ISBN查找请按1：" << endl;
+    cin >> choose;
+    if (!choose)
+    {
+        string bookname;
+        cout << "输入书名：" << endl;
+        cin >> bookname;
+        for (int i = 0; i < book1.size(); i++)
+        {
+            if (book1[i].name == bookname)
+            {
+                cout << "查阅到该书！" << endl;
+                if (!book1[i].state)
+                {
+                    cout << "该书可借阅！";
+                    break;
+                }
+                else
+                {
+                    cout << "该书不可借阅！";
+                    break;
+                }
+            }
+            if (book1[book1.size()-1].name != bookname)
+            {
+                cout << "查找不到该书";
+            }
+        }
+        
+    }
+    else
+    {
+        int ISBN_;
+        cout << "输入ISBN：" << endl;
+        cin >> ISBN_;
+        for (int i = 0; i < book1.size(); i++)
+        {
+            if (book1[i].ISBN == ISBN_)
+            {
+                cout << "查阅到该书！" << endl;
+                if (!book1[i].state)
+                {
+                    cout << "该书可借阅！";
+                    break;
+                }
+                else
+                {
+                    cout << "该书不可借阅！";
+                    break;
+                }
+            }
+            if (book1[book1.size() - 1].ISBN != ISBN_)
+            {
+                cout << "查找不到该书";
+            }
+        }
+        
+    }
+    return Menu();
+}
+
+void book_lending()
+{
+    cout << "输入借书个数：" << endl;
+    int n;
+    cin >> n;
+    cout << "输入会员名：" << endl;
+    string lendername;
+    cin >> lendername;
+    string lendtime, returntime;
+    cout << "借阅日期，应归还日期：" << endl;
+    cin >> lendtime >> returntime;
+    for (int b = 0; b < n; b++)
+    {
+        Recording temp;
+        cout << "请输入书名：";
+        cin >> temp.lendbookname;
+        for (int i = 0; i < book1.size(); i++)
+        {
+            if (book1[i].name == temp.lendbookname)
+            {
+                cout << "查阅到该书！" << endl;
+                
+                if (!book1[i].state)
+                {
+                    temp.lendtime = lendtime;
+                    
+                    temp.returntime = returntime;
+                    
+                    temp.reader = lendername;
+                    
+                    record1.push_back(temp);
+                    
+                    book1[i].state = 1;
+                    //cout << record1.size();
+                    
+                    cout << "借阅成功";
+                    
+                    break;
+                }
+                else
+                {
+                    cout << "该书不可借阅！";
+                    break;
+                }
+            }
+            if (book1[book1.size() - 1].name != temp.lendbookname)
+            {
+                cout << "查找不到该书";
+            }
+        }
+    }
+    return Menu();
+}
+
+
+void book_return()
+{
+    int n;
+    string returnername;
+    cout << "请输入还书数量："<< endl;
+    cin>>n;
+    cout << "输入会员名字：" << endl;
+    cin >> returnername;
+    if (!record1.size()) {
+        cout <<"无借阅记录，不可查询！" << endl;
+        return Menu();
+    }
+    for (int t = 0; t < record1.size(); t++) {
+        if (record1[t].reader == returnername) {
+            cout <<"找到该会员的记录"<< endl;
+            break;
+        }
+    }
+    int fund_num = 0;
+    for (int i = 0; i < n; i++)
+    {
+        
+        string book_name;
+        
+        cout << "书名" << endl;
+        cin >> book_name;
+        
+        
+        int j,k;
+        for (j = 0 ; j < record1.size(); j++) {
+            if (record1[j].reader == returnername && record1[j].lendbookname == book_name) {
+                for (k = 0; k < book1.size(); k++) {
+                    if (book1[k].name == book_name) {
+                        book1[k].state = 0;
+                        fund_num++;
+                        cout <<" 还书成功" << endl;
+                        break;
+                    }
+                    
+                }
+                break;
+            }
+            else cout <<"未找到"<<endl;
+            
+        }
+
+    }
+
+    cout << "实际应付租金:" << 5*fund_num<< endl;
+    
+    return Menu();
+    
+}
+
+void book_out()
+{
+    cout << "输入即将下架的书的名字：" << endl;
+    string a;
+    cin >> a;
+    vector<Book>::iterator it;
+    for (it = book1.begin(); it != book1.end(); it++)
+    {
+        if (a == (*it).name)
+            break;
+    }
+    if (it == book1.end() && a != (*it).name) {
+        cout << "未找到该书";
+        return Menu();
+    }
+    book1.erase(it);
+    cout << " 下架成功      "<<"现有图书："<<book1.size();
+
+    return Menu();
+}
+
+
+void save_book_file()
+{
+    
+    FILE *file;
+    file = fopen("saverebook.txt", "w+");
+    if (file == NULL)
+        cout << "Error!" << endl;
+    else
+        cout << "savebook.txt open success~" << endl;
+    
+    
+    vector<Book>::iterator it;
+    for (it = book1.begin(); it != book1.end(); it++)
+    {
+        stringstream s1, s2, s3;
+        s1 << (*it).price;
+        
+        s2 << (*it).pagenumber;
+        
+        s3 << (*it).ISBN;
+        
+        string save, temp = "    ";
+        
+        save = (*it).name + temp + s1.str() + temp + (*it).press + temp +
+        s2.str() + temp + (*it).writer + temp + s3.str();
+        
+        fprintf(file, "%s\n", save.c_str());
+        
+    }
+    
+    fclose(file);
+    
+    cout << "写入完成！" << endl << endl;
+    
+    return Menu();
+}
+void save_reconding_file()
+{
+    
+    FILE *file;
+    
+    file = fopen("savereconding.txt", "w+");
+    
+    //fopen_s(&file,"savereconding.txt", "w+");
+    
+    if (file == NULL)
+        
+        cout << "Error!" << endl;
+    
+    else
+        
+        cout << "savereconding.txt open success~" << endl;
+    
+    
+    vector<Recording>::iterator it;
+    
+    for (it = record1.begin(); it != record1.end(); it++)
+    {
+        string save, temp = "    ";
+        
+        save = (*it).reader + temp + (*it).lendbookname + temp + (*it).returntime + temp +
+        (*it).lendtime;
+        
+        fprintf(file, "%s\n", save.c_str());
+        
+    }
+    
+    fclose(file);
+    
+    cout << "写入完成！"<<endl<<endl;
+    
+    return Menu();
+}
+
+/***************功能选择*****************/
+void Choose(int Index)
+{
+    //void Menu();
+    //Book *head = BookHead;
+    switch (Index)
+    {
+        case 1: book_putaway(); break;//新书上架
+            
+        case 2: book_search(); break;//图书查询
+            
+        case 3: book_lending(); break;//图书借阅
+            
+        case 4: book_return(); break;//图书归还
+            
+        case 5: book_out(); break;//旧书下架
+            
+        case 6: save_book_file(); break;
+            
+        case 7: save_reconding_file(); break;
+            
+        case 0: exit(0);//退出
+            
+        default:Menu(); break;
+    }
+}
+
+/************菜单****************/
+void Menu()
+{
+    cout << endl << "   欢迎使用图书出租管理系统" << endl;
+    cout << "**********************************" << endl;
+    cout << "           1.新书上架" << endl;
+    cout << "           2.图书查询" << endl;
+    cout << "           3.图书借阅" << endl;
+    cout << "           4.图书归还" << endl;
+    cout << "           5.旧书下架" << endl;
+    cout << "           6.写入图书信息到文件" << endl;
+    cout << "           7.写入借阅记录到文件" << endl;
+    cout << "           0. 退 出" << endl;
+    cout << "**********************************" << endl;
+    cout << "请输入您的选择(0-7)：";
+    
+    
+    int ChooseIndex;
+    cin >> ChooseIndex;
+    
+    Choose(ChooseIndex);
+}
+
+
+int main()
+{
+    
+    Menu();
+    
+    return 0;
+}
