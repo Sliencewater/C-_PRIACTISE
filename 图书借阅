@@ -299,7 +299,10 @@ void save_book_file()
     FILE *file;
     file = fopen("saverebook.txt", "w+");
     if (file == NULL)
+    {
         cout << "Error!" << endl;
+        return Menu();
+    }
     else
         cout << "savebook.txt open success~" << endl;
     
@@ -339,8 +342,10 @@ void save_reconding_file()
     //fopen_s(&file,"savereconding.txt", "w+");
     
     if (file == NULL)
-        
+    {
         cout << "Error!" << endl;
+        return Menu();
+    }
     
     else
         
