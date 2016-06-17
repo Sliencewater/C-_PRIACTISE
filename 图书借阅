@@ -2,9 +2,18 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <conio.h>
 using namespace std;
 void Menu();
 
+class Admin
+{
+public:
+	Admin(){strcpy(id,"admin");strcpy(password,"12345");}
+	char id[6];
+	char password[6];
+};
+Admin admin;
 class Book
 {
 public:
@@ -320,8 +329,8 @@ void save_book_file()
         
         string save, temp = "    ";
         
-        save = (*it).name + temp + s1.str() + temp + (*it).press + temp +
-        s2.str() + temp + (*it).writer + temp + s3.str();
+        save = (*it).name + temp +(*it).writer + temp + (*it).press + temp +
+        s2.str()+"页" + temp + s1.str()  + "元"+ temp+ "ISBN："+s3.str();
         
         fprintf(file, "%s\n", save.c_str());
         
@@ -422,12 +431,45 @@ void Menu()
     
     Choose(ChooseIndex);
 }
+void member()
+{
+	char id_[6];
+	cout << "请输入管理员账号：";
+	scanf("%s",id_);
+	cout << "请输入密码：";
+	char a[6];
+	int i;
+	a[5] = '\0';
+	for (i=0;i<5;i++)
+	{
+	a[i]=getch();
+	cout<<"*";
+	}
+	cout << endl;
+	if(!strcmp(admin.id,id_)&&!strcmp(a,admin.password))
+	{
+		cout << "密码输入正确"<< endl;
+		return Menu();
+	}
+	else
+	{
+		cout <<"账号或者密码错误！"<< endl;
+		int temp_num;
+		cout <<"输入0退出，输入1重试"<<endl;
+		cin>> temp_num;
+		if(temp_num)
+		return member();
+		else
+		exit(0);
+	}
 
+}
 
 int main()
 {
-    
-    Menu();
+
+	member();
+    //Menu();
     
     return 0;
 }
