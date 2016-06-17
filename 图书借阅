@@ -298,6 +298,7 @@ void save_book_file()
     
     FILE *file;
     file = fopen("saverebook.txt", "w+");
+	//fopen_s(&file,"saverebook.txt", "w+");
     if (file == NULL)
     {
         cout << "Error!" << endl;
